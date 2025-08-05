@@ -37,6 +37,12 @@ Este software utiliza interfaces web publicas y esta destinado unicamente para:
 - **Reconexion automatica** y recuperacion de sesion
 - **Multi-instancia** (varios numeros en el mismo servidor)
 
+### Gestion de Entornos
+- **Configuracion separada** para produccion y test
+- **Cambio dinamico** entre entornos
+- **URLs de webhook** especificas por entorno
+- **Instancias PM2** independientes
+
 ### Integracion con IA
 - **Webhook configurable** para envio a sistemas externos
 - **Respuestas automaticas** desde IA (ChatGPT, n8n, etc.)
@@ -88,9 +94,15 @@ nano .env  # Configurar PORT, CLIENT_ID, API_KEY, etc.
 PORT=3000
 CLIENT_ID=mi-bot-empresa
 API_KEY=tu-clave-super-segura-aqui
-WEBHOOK_URL=https://tu-ia.com/webhook  # Opcional
-TELEGRAM_BOT_TOKEN=tu-token-telegram   # Para alertas
-TELEGRAM_CHAT_ID=tu-chat-id           # Para alertas
+
+# Configuracion de entornos
+NODE_ENV=test
+WEBHOOK_URL_PRODUCTION=https://api.empresa.com/webhook
+WEBHOOK_URL_TEST=https://test-api.empresa.com/webhook
+
+# Alertas opcionales
+TELEGRAM_BOT_TOKEN=tu-token-telegram
+TELEGRAM_CHAT_ID=tu-chat-id
 ```
 
 ### 3. Iniciar
@@ -99,6 +111,9 @@ TELEGRAM_CHAT_ID=tu-chat-id           # Para alertas
 npm start
 
 # Produccion con PM2
+pm2 start ecosystem.config.js
+
+# O instancia simple
 pm2 start index.js --name "agente-cliente"
 pm2 save
 pm2 startup
@@ -108,6 +123,86 @@ pm2 startup
 1. **Abrir:** `http://tu-servidor:3000`
 2. **Escanear QR** con la aplicacion movil -> Dispositivos vinculados
 3. **Listo!** El agente estara operativo
+
+## Gestion de Entornos
+
+BMA soporta configuracion separada para entornos de **produccion** y **test**, permitiendo cambiar facilmente entre diferentes webhooks y configuraciones.
+
+### Configuracion de Entornos
+
+En tu archivo `.env`, configura las URLs de webhook para cada entorno:
+
+```bash
+# Entorno actual (production/test)
+NODE_ENV=test
+
+# URLs de webhook por entorno
+WEBHOOK_URL_PRODUCTION=https://api.empresa.com/webhook
+WEBHOOK_URL_TEST=https://test-api.empresa.com/webhook
+```
+
+### Uso con PM2
+
+#### Opcion 1: Cambio dinamico de entorno
+```bash
+# Iniciar en test (por defecto)
+pm2 start index.js --name "bma-agent"
+
+# Cambiar a produccion
+pm2 set bma-agent NODE_ENV production
+pm2 restart bma-agent
+
+# Volver a test
+pm2 set bma-agent NODE_ENV test
+pm2 restart bma-agent
+```
+
+#### Opcion 2: Instancias separadas (recomendado)
+```bash
+# Usar configuracion del ecosystem
+pm2 start ecosystem.config.js
+
+# Controlar instancias individualmente
+pm2 restart bma-production  # Solo produccion
+pm2 restart bma-test        # Solo test
+pm2 logs bma-production     # Ver logs de produccion
+pm2 logs bma-test          # Ver logs de test
+```
+
+### Scripts NPM Utiles
+
+```bash
+# Iniciar entornos especificos
+npm run start:production
+npm run start:test
+
+# PM2 con entornos
+npm run pm2:start          # Iniciar ambas instancias
+npm run pm2:production     # Reiniciar solo produccion
+npm run pm2:test           # Reiniciar solo test
+npm run pm2:logs:production # Logs de produccion
+npm run pm2:logs:test      # Logs de test
+```
+
+### Verificacion del Entorno
+
+El agente muestra informacion del entorno activo:
+
+- **En los logs:** `Entorno: production/test`
+- **En la API status:** Campo `environment` en la respuesta
+- **En el navegador:** Muestra el entorno en la pagina del QR
+
+### Ejemplo de Respuesta API
+
+```json
+{
+  "clientReady": true,
+  "environment": "production",
+  "webhookUrl": "https://api.empresa.com/webhook",
+  "connectionState": "CONNECTED",
+  "timestamp": "2025-01-XX..."
+}
+```
 
 ## Uso de la API
 
@@ -187,6 +282,7 @@ waw-braves-js/
 ├── index.js              # Aplicacion principal
 ├── package.json           # Dependencias y scripts
 ├── .env.example          # Plantilla de configuracion
+├── ecosystem.config.js   # Configuracion PM2 (nuevo)
 ├── alerts/               # Scripts de monitoreo
 │   ├── check_ws.sh      # Verificacion de estado
 │   └── watchdog-demo.js # Watchdog automatico
@@ -232,6 +328,12 @@ pm2 restart agente-cliente
 1. Verificar que la URL del webhook sea accesible
 2. Comprobar logs del servidor de destino
 3. Probar manualmente el endpoint
+4. Verificar que NODE_ENV apunte al entorno correcto
+
+### Cambio de entorno no funciona
+1. Verificar que las variables WEBHOOK_URL_* esten configuradas
+2. Reiniciar PM2 tras cambiar NODE_ENV
+3. Comprobar logs para confirmar el entorno activo
 
 ## Uso Comercial
 
@@ -276,6 +378,7 @@ Las contribuciones son bienvenidas! Por favor lee [CONTRIBUTING.md](CONTRIBUTING
 ## Hoja de Ruta
 
 ### v1.1.0 (Proximamente)
+- [x] Gestion de entornos production/test
 - [ ] Panel web de administracion
 - [ ] Soporte para grupos
 - [ ] Plantillas de mensajes

@@ -7,6 +7,7 @@ node_modules/
 **/index-funcional.js
 logs/
 *.log
+
 # WhatsApp Web.js
 **/.wwebjs_auth/
 **/.wwebjs_cache/
@@ -19,10 +20,17 @@ logs/
 .env
 .env.local
 .env.production
+.env.test
 
 # PM2
-ecosystem.config.js
+ecosystem.config.js.bak
+.pm2/
 
 # Archivos temporales
 temp/
 tmp/
+
+# Carpetas de entornos especificos
+production/
+test/
+staging/

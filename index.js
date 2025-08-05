@@ -16,6 +16,15 @@ const app = express();
 app.use(bodyParser.json({ limit: '10mb' })); // Reducido para VPS pequeño
 app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
 
+// Determinar URL del webhook según el entorno / Determine webhook URL by environment
+const webhookUrl = process.env.NODE_ENV === 'production' 
+  ? process.env.WEBHOOK_URL_PRODUCTION 
+  : process.env.WEBHOOK_URL_TEST;
+
+// Log del entorno actual / Log current environment
+console.log(`[${process.env.CLIENT_ID}] Entorno: ${process.env.NODE_ENV || 'test'}`);
+console.log(`[${process.env.CLIENT_ID}] Webhook URL: ${webhookUrl || 'No configurado'}`);
+
 const client = new Client({
   authStrategy: new LocalAuth({ clientId: process.env.CLIENT_ID }),
   puppeteer: { headless: true, args: ['--no-sandbox', '--disable-setuid-sandbox'] }
@@ -31,11 +40,11 @@ client.on('ready', () => {
 
 client.on('disconnected', (reason) => {
   clientReady = false;
-  console.log(`[${process.env.CLIENT_ID}] 🔌 Cliente desconectado: ${reason}`);
+  console.log(`[${process.env.CLIENT_ID}] Cliente desconectado: ${reason}`);
   
   // Si la desconexión es por logout, reinicializar
   if (reason === 'LOGOUT' || reason === 'NAVIGATION') {
-    console.log(`[${process.env.CLIENT_ID}] 🔄 Reinicializando cliente...`);
+    console.log(`[${process.env.CLIENT_ID}] Reinicializando cliente...`);
     setTimeout(() => {
       client.initialize();
     }, 5000);
@@ -47,9 +56,9 @@ let lastQR = '';
 
 client.on('qr', (qr) => {
   lastQR = qr;
-  console.log(`[${process.env.CLIENT_ID}] 📱 Escanea este código QR:`);
+  console.log(`[${process.env.CLIENT_ID}] Escanea este código QR:`);
   qrcode.generate(qr, { small: true });
-  console.log(`[${process.env.CLIENT_ID}] ⏰ QR generado a las: ${new Date().toLocaleString()}`);
+  console.log(`[${process.env.CLIENT_ID}] QR generado a las: ${new Date().toLocaleString()}`);
 });
 
 
@@ -69,14 +78,14 @@ client.on('message', async (msg) => {
         data: media.data
       };
     } catch (err) {
-      console.error(`[${process.env.CLIENT_ID}] ❌ Error al descargar media`, err.message);
+      console.error(`[${process.env.CLIENT_ID}] Error al descargar media`, err.message);
     }
   }
 
-  if (process.env.WEBHOOK_URL) {
+  if (webhookUrl) {
     try {
-      const webhookResponse = await axios.post(process.env.WEBHOOK_URL, payload);
-      console.log(`[${process.env.CLIENT_ID}] ✅ Enviado a webhook`);
+      const webhookResponse = await axios.post(webhookUrl, payload);
+      console.log(`[${process.env.CLIENT_ID}] ✅ Enviado a webhook (${process.env.NODE_ENV || 'test'})`);
 
       const { to, message, media } = webhookResponse.data;
       const chatId = to.includes('@c.us') || to.includes('@g.us') ? to : `${to}@c.us`;
@@ -102,7 +111,7 @@ client.on('message', async (msg) => {
       console.log(`[${process.env.CLIENT_ID}] ✅ Mensaje enviado desde respuesta del agente IA`);
 
     } catch (err) {
-      console.error(`[${process.env.CLIENT_ID}] ❌ Error al procesar respuesta del webhook`, err.message);
+      console.error(`[${process.env.CLIENT_ID}] Error al procesar respuesta del webhook`, err.message);
     }
   }
 
@@ -117,12 +126,12 @@ app.post('/api/whatsapp', async (req, res) => {
 
   // Validación más robusta del cliente
   if (!client) {
-    console.error(`[${process.env.CLIENT_ID}] ❌ Cliente no está definido`);
+    console.error(`[${process.env.CLIENT_ID}] Cliente no está definido`);
     return res.status(503).json({ error: 'WhatsApp client not initialized' });
   }
 
   if (!clientReady) {
-    console.error(`[${process.env.CLIENT_ID}] ❌ Cliente no está listo`);
+    console.error(`[${process.env.CLIENT_ID}] Cliente no está listo`);
     return res.status(503).json({ error: 'WhatsApp client not ready - check QR scan' });
   }
 
@@ -130,11 +139,11 @@ app.post('/api/whatsapp', async (req, res) => {
   try {
     const clientInfo = await client.getState();
     if (clientInfo !== 'CONNECTED') {
-      console.error(`[${process.env.CLIENT_ID}] ❌ Cliente no conectado. Estado: ${clientInfo}`);
+      console.error(`[${process.env.CLIENT_ID}] Cliente no conectado. Estado: ${clientInfo}`);
       return res.status(503).json({ error: `WhatsApp client not connected. State: ${clientInfo}` });
     }
   } catch (err) {
-    console.error(`[${process.env.CLIENT_ID}] ❌ Error verificando estado del cliente:`, err.message);
+    console.error(`[${process.env.CLIENT_ID}] Error verificando estado del cliente:`, err.message);
     return res.status(503).json({ error: 'WhatsApp client not accessible' });
   }
 
@@ -152,7 +161,7 @@ app.post('/api/whatsapp', async (req, res) => {
     // Verificar si el usuario está registrado
     const isRegistered = await client.isRegisteredUser(chatId);
     if (!isRegistered) {
-      console.log(`[${process.env.CLIENT_ID}] ⚠️ ID no registrado: ${chatId}`);
+      console.log(`[${process.env.CLIENT_ID}] ID no registrado: ${chatId}`);
       return res.status(404).json({ error: 'Recipient not found' });
     }
 
@@ -164,10 +173,10 @@ app.post('/api/whatsapp', async (req, res) => {
         new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 10000))
       ]);
     } catch (chatErr) {
-      console.error(`[${process.env.CLIENT_ID}] ❌ Error accediendo al chat ${chatId}:`, chatErr.message);
+      console.error(`[${process.env.CLIENT_ID}] Error accediendo al chat ${chatId}:`, chatErr.message);
       // Intentar enviar sin validar chat si el error es de timeout
       if (chatErr.message === 'Timeout') {
-        console.log(`[${process.env.CLIENT_ID}] ⚠️ Timeout en getChatById, intentando envío directo`);
+        console.log(`[${process.env.CLIENT_ID}] Timeout en getChatById, intentando envío directo`);
       } else {
         return res.status(404).json({ error: `Chat not accessible for ${chatId}` });
       }
@@ -191,11 +200,12 @@ app.post('/api/whatsapp', async (req, res) => {
       status: 'sent', 
       message: 'Message sent successfully',
       to: chatId,
+      environment: process.env.NODE_ENV || 'test',
       timestamp: new Date().toISOString()
     });
 
   } catch (err) {
-    console.error(`[${process.env.CLIENT_ID}] ❌ Error al enviar mensaje a ${chatId}:`, err.message);
+    console.error(`[${process.env.CLIENT_ID}] Error al enviar mensaje a ${chatId}:`, err.message);
     res.status(500).json({ 
       error: err.message,
       details: 'Check server logs for more information'
@@ -214,6 +224,8 @@ app.get('/api/whatsapp/status', async (req, res) => {
     let status = {
       clientExists: !!client,
       clientReady: clientReady,
+      environment: process.env.NODE_ENV || 'test',
+      webhookUrl: webhookUrl || null,
       timestamp: new Date().toISOString(),
       clientId: process.env.CLIENT_ID
     };
@@ -251,7 +263,7 @@ app.post('/api/whatsapp/reset', async (req, res) => {
   }
 
   try {
-    console.log(`[${process.env.CLIENT_ID}] 🔄 Reiniciando cliente por API...`);
+    console.log(`[${process.env.CLIENT_ID}] Reiniciando cliente por API...`);
     
     clientReady = false;
     await client.destroy();
@@ -262,7 +274,7 @@ app.post('/api/whatsapp/reset', async (req, res) => {
     
     res.json({ status: 'restarting', message: 'Client restarting, check logs for QR code' });
   } catch (err) {
-    console.error(`[${process.env.CLIENT_ID}] ❌ Error al reiniciar:`, err.message);
+    console.error(`[${process.env.CLIENT_ID}] Error al reiniciar:`, err.message);
     res.status(500).json({ error: err.message });
   }
 });
@@ -270,13 +282,19 @@ app.post('/api/whatsapp/reset', async (req, res) => {
 // Paso 6: Endpoint para mostrar el QR en el navegador
 app.get('/', async (req, res) => {
   if (!lastQR) {
-    return res.send('<h2>🤖 Bot operativo. No hay QR disponible. Ya está vinculado o esperando...</h2>');
+    return res.send(`
+      <h2>Bot operativo en entorno: ${process.env.NODE_ENV || 'test'}</h2>
+      <p>No hay QR disponible. Ya está vinculado o esperando...</p>
+      <p><strong>Webhook:</strong> ${webhookUrl || 'No configurado'}</p>
+    `);
   }
 
   try {
     const qrImage = await QRCode.toDataURL(lastQR);
     res.send(`
-      <h2>🤖 Escanea este código QR para vincular WhatsApp:</h2>
+      <h2>Escanea este código QR para vincular WhatsApp:</h2>
+      <p><strong>Entorno:</strong> ${process.env.NODE_ENV || 'test'}</p>
+      <p><strong>Webhook:</strong> ${webhookUrl || 'No configurado'}</p>
       <img src="${qrImage}" alt="QR Code" style="max-width:300px;" />
     `);
   } catch (err) {
@@ -286,12 +304,16 @@ app.get('/', async (req, res) => {
 
 // Paso 6: Iniciar servidor y seleccionar puerto
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`🚀 Servidor activo en puerto ${PORT}`));
+app.listen(PORT, () => {
+  console.log(`Servidor activo en puerto ${PORT}`);
+  console.log(`Entorno: ${process.env.NODE_ENV || 'test'}`);
+  console.log(`Webhook: ${webhookUrl || 'No configurado'}`);
+});
 
 // Manejar errores de autenticación
 client.on('auth_failure', (msg) => {
-  console.error(`[${process.env.CLIENT_ID}] ❌ Error de autenticación: ${msg}`);
-  console.log(`[${process.env.CLIENT_ID}] 🔄 Eliminando sesión y reiniciando...`);
+  console.error(`[${process.env.CLIENT_ID}] Error de autenticación: ${msg}`);
+  console.log(`[${process.env.CLIENT_ID}] Eliminando sesión y reiniciando...`);
   
   // Eliminar sesión corrupta y reiniciar
   setTimeout(() => {
