@@ -144,23 +144,32 @@ WEBHOOK_URL_TEST=https://test-api.empresa.com/webhook
 WEBHOOK_URL=https://api.empresa.com/webhook
 ```
 
-### Cambio de Entorno con PM2
+### Cambio de Entorno
 
-#### Metodo Principal: Cambio dinamico
+#### Metodo Principal: Edicion del archivo .env
 ```bash
-# Iniciar instancia unica
-pm2 start index.js --name "mi-agente"
+# 1. Editar archivo .env
+nano .env
 
-# Cambiar a produccion
-pm2 set mi-agente NODE_ENV production
+# 2. Cambiar la variable NODE_ENV:
+NODE_ENV=production  # Para produccion
+NODE_ENV=test        # Para test
+
+# 3. Reiniciar el proceso
 pm2 restart mi-agente
 
-# Cambiar a test
-pm2 set mi-agente NODE_ENV test
-pm2 restart mi-agente
-
-# Verificar cambio en logs
+# 4. Verificar cambio en logs
 pm2 logs mi-agente --lines 5
+```
+
+#### Configuracion Requerida en .env
+```bash
+# Entorno actual
+NODE_ENV=production
+
+# URLs de webhook por entorno
+WEBHOOK_URL_PRODUCTION=https://api.empresa.com/webhook
+WEBHOOK_URL_TEST=https://test-api.empresa.com/webhook
 ```
 
 #### Opcion Avanzada: Instancias separadas (ecosystem.config.js)
