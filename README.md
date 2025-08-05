@@ -5,65 +5,65 @@
 [![GitHub release](https://img.shields.io/github/release/Carlos-Vera/waw-braves-js.svg)](https://github.com/Carlos-Vera/waw-braves-js/releases)
 [![GitHub issues](https://img.shields.io/github/issues/Carlos-Vera/waw-braves-js.svg)](https://github.com/Carlos-Vera/waw-braves-js/issues)
 
-> **Agente de mensajeria profesional con webhook y API REST para integracion empresarial**
+> **Agente de mensajería profesional con webhook y API REST para integración empresarial**
 
-Un agente robusto y escalable para plataformas de mensajeria que permite automatizar conversaciones, integrar con sistemas de IA y gestionar multiples clientes desde una API REST completa.
+Un agente robusto y escalable para plataformas de mensajería que permite automatizar conversaciones, integrar con sistemas de IA y gestionar múltiples clientes desde una API REST completa.
 
 ## Disclaimer Legal
 
-**IMPORTANTE:** Este proyecto es independiente y no esta afiliado, respaldado o patrocinado por Meta Platforms, Inc. o sus subsidiarias. Las marcas comerciales mencionadas son propiedad de sus respectivos duenos.
+**IMPORTANTE:** Este proyecto es independiente y no está afiliado, respaldado o patrocinado por Meta Platforms, Inc. o sus subsidiarias. Las marcas comerciales mencionadas son propiedad de sus respectivos dueños.
 
-Este software utiliza interfaces web publicas y esta destinado unicamente para:
-- Uso educativo e investigacion
+Este software utiliza interfaces web públicas y está destinado únicamente para:
+- Uso educativo e investigación
 - Desarrollo y pruebas en entornos controlados
 - Integraciones empresariales autorizadas
 
 **RESPONSABILIDAD DEL USUARIO:** Los usuarios son completamente responsables de:
-- Cumplir con todos los terminos de servicio aplicables
+- Cumplir con todos los términos de servicio aplicables
 - Obtener las autorizaciones necesarias antes del uso comercial
-- Respetar las politicas de las plataformas de mensajeria
-- Usar el software de manera etica y legal
+- Respetar las políticas de las plataformas de mensajería
+- Usar el software de manera ética y legal
 
 **USO BAJO SU PROPIO RIESGO:** BravesLab no se hace responsable del uso indebido de este software.
 
 ---
 
-## Caracteristicas Principales
+## Características Principales
 
-### Agente de Mensajeria Avanzado
-- Conexion estable con **whatsapp-web.js**
-- Manejo de **texto, imagenes, documentos y archivos multimedia**
-- **QR automatico** para vinculacion
-- **Reconexion automatica** y recuperacion de sesion
-- **Multi-instancia** (varios numeros en el mismo servidor)
+### Agente de Mensajería Avanzado
+- Conexión estable con **whatsapp-web.js**
+- Manejo de **texto, imágenes, documentos y archivos multimedia**
+- **QR automático** para vinculación
+- **Reconexión automática** y recuperación de sesión
+- **Multi-instancia** (varios números en el mismo servidor)
 
-### Gestion de Entornos
-- **Configuracion separada** para produccion y test
-- **Cambio dinamico** entre entornos
-- **URLs de webhook** especificas por entorno
+### Gestión de Entornos
+- **Configuración separada** para producción y test
+- **Cambio dinámico** entre entornos
+- **URLs de webhook** específicas por entorno
 - **Instancias PM2** independientes
 
-### Integracion con IA
-- **Webhook configurable** para envio a sistemas externos
-- **Respuestas automaticas** desde IA (ChatGPT, n8n, etc.)
+### Integración con IA
+- **Webhook configurable** para envío a sistemas externos
+- **Respuestas automáticas** desde IA (ChatGPT, n8n, etc.)
 - **Procesamiento en tiempo real** de mensajes entrantes
-- **Soporte para arrays de mensajes** multiples
+- **Soporte para arrays de mensajes** múltiples
 
 ### API REST Completa
-- **Envio de mensajes** programaticos
-- **Autenticacion con API Key** segura
+- **Envío de mensajes** programáticos
+- **Autenticación con API Key** segura
 - **Endpoints de estado** y monitoreo
-- **Validacion de numeros** automatica
+- **Validación de números** automática
 - **Logs detallados** y debugging
 
-### Listo para Produccion
-- **Integracion con PM2** para auto-restart
+### Listo para Producción
+- **Integración con PM2** para auto-restart
 - **Sistema watchdog** con alertas por Telegram
 - **Rate limiting** y validaciones
 - **Manejo robusto de errores**
-- **Configuracion por variables de entorno**
+- **Configuración por variables de entorno**
 
-## Instalacion Rapida
+## Instalación Rápida
 
 ### Prerrequisitos
 ```bash
@@ -71,7 +71,7 @@ Este software utiliza interfaces web publicas y esta destinado unicamente para:
 node --version  # v18.17.0+
 npm --version   # 9.0.0+
 
-# PM2 (recomendado para produccion)
+# PM2 (recomendado para producción)
 npm install -g pm2
 ```
 
@@ -89,13 +89,13 @@ cp .env.example .env
 nano .env  # Configurar PORT, CLIENT_ID, API_KEY, etc.
 ```
 
-### 2. Configuracion Basica (.env)
+### 2. Configuración Básica (.env)
 ```bash
 PORT=3000
 CLIENT_ID=mi-bot-empresa
 API_KEY=tu-clave-super-segura-aqui
 
-# Configuracion de entornos
+# Configuración de entornos
 NODE_ENV=test
 WEBHOOK_URL_PRODUCTION=https://api.empresa.com/webhook
 WEBHOOK_URL_TEST=https://test-api.empresa.com/webhook
@@ -119,16 +119,16 @@ pm2 save
 pm2 startup
 ```
 
-### 4. Vincular Plataforma de Mensajeria
+### 4. Vincular Plataforma de Mensajería
 1. **Abrir:** `http://tu-servidor:3000`
-2. **Escanear QR** con la aplicacion movil -> Dispositivos vinculados
-3. **Listo!** El agente estara operativo
+2. **Escanear QR** con la aplicación móvil -> Dispositivos vinculados
+3. **¡Listo!** El agente estará operativo
 
-## Gestion de Entornos
+## Gestión de Entornos
 
-BMA soporta configuracion separada para entornos de **produccion** y **test**, permitiendo cambiar facilmente entre diferentes webhooks y configuraciones mediante una sola instancia PM2.
+BMA soporta configuración separada para entornos de **producción** y **test**, permitiendo cambiar fácilmente entre diferentes webhooks y configuraciones mediante una sola instancia PM2.
 
-### Configuracion de Entornos
+### Configuración de Entornos
 
 En tu archivo `.env`, configura las URLs de webhook para cada entorno:
 
@@ -146,13 +146,13 @@ WEBHOOK_URL=https://api.empresa.com/webhook
 
 ### Cambio de Entorno
 
-#### Metodo Principal: Edicion del archivo .env
+#### Método Principal: Edición del archivo .env
 ```bash
 # 1. Editar archivo .env
 nano .env
 
 # 2. Cambiar la variable NODE_ENV:
-NODE_ENV=production  # Para produccion
+NODE_ENV=production  # Para producción
 NODE_ENV=test        # Para test
 
 # 3. Reiniciar el proceso
@@ -162,7 +162,7 @@ pm2 restart mi-agente
 pm2 logs mi-agente --lines 5
 ```
 
-#### Configuracion Requerida en .env
+#### Configuración Requerida en .env
 ```bash
 # Entorno actual
 NODE_ENV=production
@@ -172,9 +172,9 @@ WEBHOOK_URL_PRODUCTION=https://api.empresa.com/webhook
 WEBHOOK_URL_TEST=https://test-api.empresa.com/webhook
 ```
 
-#### Opcion Avanzada: Instancias separadas (ecosystem.config.js)
+#### Opción Avanzada: Instancias separadas (ecosystem.config.js)
 ```bash
-# Para usuarios que prefieran instancias multiples
+# Para usuarios que prefieran instancias múltiples
 pm2 start ecosystem.config.js
 
 # Controlar instancias individualmente
@@ -182,13 +182,13 @@ pm2 restart mi-agente-production
 pm2 restart mi-agente-test
 ```
 
-### Verificacion del Entorno
+### Verificación del Entorno
 
-El agente muestra informacion del entorno activo:
+El agente muestra información del entorno activo:
 
 - **En los logs:** Entorno: production/test
 - **En la API status:** Campo `environment` en la respuesta
-- **En el navegador:** Muestra el entorno en la pagina del QR
+- **En el navegador:** Muestra el entorno en la página del QR
 
 ### Ejemplo de Respuesta API
 
@@ -211,7 +211,7 @@ curl -X POST http://localhost:3000/api/whatsapp \
   -H "x-api-key: tu-clave-api" \
   -d '{
     "to": "1234567890",
-    "text": "Hola desde el agente!"
+    "text": "¡Hola desde el agente!"
   }'
 ```
 
@@ -237,7 +237,7 @@ curl -X POST http://localhost:3000/api/whatsapp \
   }'
 ```
 
-## Configuracion Avanzada
+## Configuración Avanzada
 
 ### Multi-instancia
 ```bash
@@ -250,7 +250,7 @@ CLIENT_ID=cliente2 PORT=3002 node index.js
 
 ### Webhook con IA
 ```javascript
-// El bot enviara automaticamente:
+// El bot enviará automáticamente:
 {
   "from": "1234567890@c.us",
   "type": "chat",
@@ -262,7 +262,7 @@ CLIENT_ID=cliente2 PORT=3002 node index.js
 {
   "to": "1234567890",
   "message": "Respuesta de la IA"
-  // o "message": ["Mensaje 1", "Mensaje 2"] para multiples
+  // o "message": ["Mensaje 1", "Mensaje 2"] para múltiples
 }
 ```
 
@@ -272,20 +272,20 @@ CLIENT_ID=cliente2 PORT=3002 node index.js
 */5 * * * * node /ruta/alerts/watchdog-demo.js
 ```
 
-## Documentacion
+## Documentación
 
 ### Estructura del Proyecto
 ```
 waw-braves-js/
-├── index.js              # Aplicacion principal
+├── index.js              # Aplicación principal
 ├── package.json           # Dependencias y scripts
-├── .env.example          # Plantilla de configuracion
-├── ecosystem.config.js   # Configuracion PM2 (nuevo)
+├── .env.example          # Plantilla de configuración
+├── ecosystem.config.js   # Configuración PM2 (nuevo)
 ├── alerts/               # Scripts de monitoreo
-│   ├── check_ws.sh      # Verificacion de estado
-│   └── watchdog-demo.js # Watchdog automatico
+│   ├── check_ws.sh      # Verificación de estado
+│   └── watchdog-demo.js # Watchdog automático
 ├── logs/                 # Archivos de log
-└── docs/                # Documentacion adicional
+└── docs/                # Documentación adicional
 ```
 
 ### Endpoints de la API
@@ -294,16 +294,16 @@ waw-braves-js/
 | `POST` | `/api/whatsapp` | Enviar mensaje |
 | `GET` | `/api/whatsapp/status` | Estado del bot |
 | `POST` | `/api/whatsapp/reset` | Reiniciar cliente |
-| `GET` | `/` | Ver QR de vinculacion |
+| `GET` | `/` | Ver QR de vinculación |
 
-### Codigos de Respuesta
-- `200` - Exito
-- `400` - Peticion invalida
+### Códigos de Respuesta
+- `200` - Éxito
+- `400` - Petición invalida
 - `401` - API Key invalida
 - `404` - Destinatario no encontrado
 - `503` - Cliente no conectado
 
-## Solucion de Problemas
+## Solución de Problemas
 
 ### Agente no conecta
 ```bash
@@ -319,27 +319,27 @@ pm2 restart agente-cliente
 
 ### QR no aparece
 1. Verificar que el puerto este libre
-2. Comprobar configuracion de CLIENT_ID
+2. Comprobar configuración de CLIENT_ID
 3. Eliminar carpeta `.wwebjs_auth` y reiniciar
 
 ### Webhook no funciona
-1. Verificar que la URL del webhook sea accesible
+1. Comprobar que la URL del webhook sea accesible
 2. Comprobar logs del servidor de destino
 3. Probar manualmente el endpoint
-4. Verificar que NODE_ENV apunte al entorno correcto
+4. Comprobar que NODE_ENV apunte al entorno correcto
 
 ### Cambio de entorno no funciona
-1. Verificar que las variables WEBHOOK_URL_* esten configuradas
+1. Comprobar que las variables WEBHOOK_URL_* esten configuradas
 2. Reiniciar PM2 tras cambiar NODE_ENV
-3. Comprobar logs para confirmar el entorno activo
+3. Revisar logs para confirmar el entorno activo
 
 ## Uso Comercial
 
-Este proyecto esta bajo licencia **CC BY-NC-SA 4.0** (no comercial).
+Este proyecto está bajo licencia **CC BY-NC-SA 4.0** (no comercial).
 
 ### Uso Libre (No Comercial):
 - Proyectos personales
-- Investigacion y educacion
+- Investigación y educación
 - ONGs y organizaciones sin fines de lucro
 - Desarrollo y pruebas
 
@@ -348,7 +348,7 @@ Si necesitas usar este agente para:
 - Empresas y comercios
 - Servicios de pago
 - Productos comerciales
-- Soporte tecnico empresarial
+- Soporte técnico empresarial
 
 **Contacta para licencia comercial:**
 - **Email:** carlos@braveslab.com
@@ -357,10 +357,10 @@ Si necesitas usar este agente para:
 
 **Ofrecemos:**
 - Licencias comerciales flexibles
-- Acuerdos de regalias justos
-- Soporte tecnico especializado
+- Acuerdos de regalías justos
+- Soporte técnico especializado
 - Desarrollo de funcionalidades personalizadas
-- Consultoria de implementacion
+- Consultoría de implementación
 
 ## Contribuir
 
@@ -368,23 +368,23 @@ Las contribuciones son bienvenidas! Por favor lee [CONTRIBUTING.md](CONTRIBUTING
 
 ### Formas de Contribuir:
 - Reportar errores
-- Proponer nuevas caracteristicas
-- Mejorar documentacion
+- Proponer nuevas características
+- Mejorar documentación
 - Escribir pruebas
 - Traducciones
 
 ## Hoja de Ruta
 
-### v1.1.0 (Proximamente)
-- [x] Gestion de entornos production/test
-- [ ] Panel web de administracion
+### v1.1.0 (Próximamente)
+- [x] Gestión de entornos production/test
+- [ ] Panel web de administración
 - [ ] Soporte para grupos
 - [ ] Plantillas de mensajes
-- [ ] Metricas y analiticas
+- [ ] Métricas y analíticas
 
 ### v1.2.0
 - [ ] Chatbots con flujos visuales
-- [ ] Integracion con CRM
+- [ ] Integración con CRM
 - [ ] API GraphQL
 - [ ] Multi-tenant SaaS
 
@@ -392,12 +392,12 @@ Las contribuciones son bienvenidas! Por favor lee [CONTRIBUTING.md](CONTRIBUTING
 
 Un agradecimiento especial a todos los que hacen posible este proyecto:
 
-<!-- Sera actualizado automaticamente -->
-- Tu nombre aparecera aqui al contribuir
+<!-- Será actualizado automáticamente -->
+- Tu nombre aparecerá aquí al contribuir
 
 ## Licencia
 
-Este proyecto esta licenciado bajo **Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International**.
+Este proyecto está licenciado bajo **Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International**.
 
 [![License: CC BY-NC-SA 4.0](https://licensebuttons.net/l/by-nc-sa/4.0/88x31.png)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
 
@@ -406,24 +406,24 @@ Este proyecto esta licenciado bajo **Creative Commons Attribution-NonCommercial-
 - **Adaptar** - remix, transformar y construir sobre el material
 - **No Comercial** - no usar para fines comerciales
 - **Compartir Igual** - usar la misma licencia para derivados
-- **Atribucion** - dar credito apropiado
+- **Atribucion** - dar crédito apropiado
 
-**Para uso comercial, contacta:** carlos@braveslab.com
+**Para uso comercial, contáctame:** carlos@braveslab.com
 
 ---
 
-## Te Gusta el Proyecto?
+## ¿Te gusta nuestro proyecto?
 
-Si este proyecto te resulta util:
+Si este proyecto te resulta útil:
 
 - **Dale una estrella** en GitHub
 - **Reporta errores** que encuentres
 - **Sugiere mejoras** 
-- **Contribuye** con codigo
-- **Compartelo** con otros desarrolladores
+- **Contribuye** con código
+- **Compártelo** con otros desarrolladores
 
 ---
 
-**Hecho con amor para la comunidad de codigo abierto**
+**Hecho con amor para la comunidad de código abierto**
 
-**Preguntas?** Abre un [issue](https://github.com/Carlos-Vera/waw-braves-js/issues) o contactanos directamente!
+**¿Preguntas?** Abre un [issue](https://github.com/Carlos-Vera/waw-braves-js/issues) o contáctanos directamente!
