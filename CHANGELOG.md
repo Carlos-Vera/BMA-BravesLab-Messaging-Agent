@@ -5,12 +5,13 @@ Todos los cambios notables en este proyecto seran documentados en este archivo.
 El formato esta basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/),
 y este proyecto adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.0.1] - 2025-08-05
+## [1.1.0] - 2025-01-05
 
 ### Agregado
 - **Gestion de entornos**: Soporte completo para entornos de produccion y test
 - **Variables de entorno separadas**: `WEBHOOK_URL_PRODUCTION` y `WEBHOOK_URL_TEST`
-- **Configuracion PM2**: Archivo `ecosystem.config.js` para instancias separadas
+- **Cambio dinamico**: Posibilidad de cambiar entorno sin perder sesion
+- **Configuracion PM2**: Archivo `ecosystem.config.js` para instancias multiples, puedes utilizar una instancia de produccion y otra de test funcionando a la vez.
 - **Scripts NPM**: Comandos utiles para manejo de entornos
 - **Logs informativos**: Indicadores claros del entorno activo
 - **API mejorada**: Campo `environment` en respuestas de status
@@ -21,13 +22,13 @@ y este proyecto adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.h
 - **.env.example**: Documentacion completa de nuevas variables
 - **package.json**: Scripts adicionales para entornos y PM2
 - **README.md**: Documentacion extendida con seccion de entornos
-- **.gitignore**: Archivos adicionales para entornos
 
 ### Corregido
 - **Logs de webhook**: Ahora muestran el entorno usado
 - **Pagina QR**: Indica entorno y webhook activo
+- **Deteccion de configuracion**: Mejor manejo de variables no definidas
 
-## [1.0.0] - 2025-08-04
+## [1.0.0] - 2025-01-04
 
 ### Agregado
 - **Agente de mensajeria**: Conexion estable con whatsapp-web.js

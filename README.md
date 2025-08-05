@@ -126,7 +126,7 @@ pm2 startup
 
 ## Gestion de Entornos
 
-BMA soporta configuracion separada para entornos de **produccion** y **test**, permitiendo cambiar facilmente entre diferentes webhooks y configuraciones.
+BMA soporta configuracion separada para entornos de **produccion** y **test**, permitiendo cambiar facilmente entre diferentes webhooks y configuraciones mediante una sola instancia PM2.
 
 ### Configuracion de Entornos
 
@@ -134,61 +134,50 @@ En tu archivo `.env`, configura las URLs de webhook para cada entorno:
 
 ```bash
 # Entorno actual (production/test)
-NODE_ENV=test
+NODE_ENV=production
 
 # URLs de webhook por entorno
 WEBHOOK_URL_PRODUCTION=https://api.empresa.com/webhook
 WEBHOOK_URL_TEST=https://test-api.empresa.com/webhook
+
+# Variable legacy (mantener por compatibilidad)
+WEBHOOK_URL=https://api.empresa.com/webhook
 ```
 
-### Uso con PM2
+### Cambio de Entorno con PM2
 
-#### Opcion 1: Cambio dinamico de entorno
+#### Metodo Principal: Cambio dinamico
 ```bash
-# Iniciar en test (por defecto)
-pm2 start index.js --name "bma-agent"
+# Iniciar instancia unica
+pm2 start index.js --name "mi-agente"
 
 # Cambiar a produccion
-pm2 set bma-agent NODE_ENV production
-pm2 restart bma-agent
+pm2 set mi-agente NODE_ENV production
+pm2 restart mi-agente
 
-# Volver a test
-pm2 set bma-agent NODE_ENV test
-pm2 restart bma-agent
+# Cambiar a test
+pm2 set mi-agente NODE_ENV test
+pm2 restart mi-agente
+
+# Verificar cambio en logs
+pm2 logs mi-agente --lines 5
 ```
 
-#### Opcion 2: Instancias separadas (recomendado)
+#### Opcion Avanzada: Instancias separadas (ecosystem.config.js)
 ```bash
-# Usar configuracion del ecosystem
+# Para usuarios que prefieran instancias multiples
 pm2 start ecosystem.config.js
 
 # Controlar instancias individualmente
-pm2 restart bma-production  # Solo produccion
-pm2 restart bma-test        # Solo test
-pm2 logs bma-production     # Ver logs de produccion
-pm2 logs bma-test          # Ver logs de test
-```
-
-### Scripts NPM Utiles
-
-```bash
-# Iniciar entornos especificos
-npm run start:production
-npm run start:test
-
-# PM2 con entornos
-npm run pm2:start          # Iniciar ambas instancias
-npm run pm2:production     # Reiniciar solo produccion
-npm run pm2:test           # Reiniciar solo test
-npm run pm2:logs:production # Logs de produccion
-npm run pm2:logs:test      # Logs de test
+pm2 restart mi-agente-production
+pm2 restart mi-agente-test
 ```
 
 ### Verificacion del Entorno
 
 El agente muestra informacion del entorno activo:
 
-- **En los logs:** `Entorno: production/test`
+- **En los logs:** Entorno: production/test
 - **En la API status:** Campo `environment` en la respuesta
 - **En el navegador:** Muestra el entorno en la pagina del QR
 
