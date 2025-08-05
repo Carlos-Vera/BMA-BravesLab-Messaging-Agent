@@ -1,0 +1,28 @@
+node_modules/
+.env
+**/.wwebjs_auth/
+**/.DS_Store
+**/index-old.js
+**/index-v2.js
+**/index-funcional.js
+logs/
+*.log
+# WhatsApp Web.js
+**/.wwebjs_auth/
+**/.wwebjs_cache/
+
+# Logs especificos
+logs/
+*.log
+
+# Archivos de configuracion sensibles
+.env
+.env.local
+.env.production
+
+# PM2
+ecosystem.config.js
+
+# Archivos temporales
+temp/
+tmp/
