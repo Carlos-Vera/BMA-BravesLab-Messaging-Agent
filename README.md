@@ -13,7 +13,7 @@ Un agente robusto y escalable para plataformas de mensajeria que permite automat
 
 ### Instalacion Rapida con EasyPanel (Recomendada)
 
-![EasyPanel](https://easypanel.io/img/logo.svg)
+![EasyPanel](https://easypanel.io/img/logo_dark.svg)
 
 **Para usuarios que priorizan simplicidad y rapidez de despliegue:**
 
