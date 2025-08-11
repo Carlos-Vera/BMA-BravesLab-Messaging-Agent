@@ -1,20 +1,57 @@
-// Paso 1: Crea un nuevo archivo llamado `index.js`
-
-// 1.1 - Instala las dependencias si aún no lo hiciste:
-// npm install whatsapp-web.js express body-parser axios mime-types dotenv qrcode-terminal
+// BravesLab Messaging Agent (MBA) - Archivo principal / Main file
+// Versión 1.1.2 - Corregida y mejorada para compatibilidad total
 
 require('dotenv').config();
 const { Client, LocalAuth, MessageMedia } = require('whatsapp-web.js');
 const express = require('express');
 const bodyParser = require('body-parser');
 const qrcode = require('qrcode-terminal');
-const QRCode = require('qrcode'); // Para generar imagen del QR en el navegador
+const QRCode = require('qrcode');
 const axios = require('axios');
 const mime = require('mime-types');
+const fs = require('fs');
+const path = require('path');
 
 const app = express();
-app.use(bodyParser.json({ limit: '10mb' })); // Reducido para VPS pequeño
+app.use(bodyParser.json({ limit: '10mb' }));
 app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
+
+// Detección de entorno / Environment detection
+const isDocker = process.env.DOCKER_ENV === 'true' || fs.existsSync('/.dockerenv');
+const isEasyPanel = process.env.EASYPANEL === 'true' || isDocker;
+
+// Rutas adaptativas / Adaptive paths
+const BASE_PATH = process.env.APP_BASE_PATH || __dirname;
+const SESSION_PATH = path.join(BASE_PATH, '.wwebjs_auth');
+const LOG_PATH = path.join(BASE_PATH, 'logs');
+
+// Crear directorios si no existen / Create directories if they don't exist
+[SESSION_PATH, LOG_PATH].forEach(dir => {
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, { recursive: true });
+  }
+});
+
+// Sistema de logging unificado / Unified logging system
+const log = (level, message) => {
+  const timestamp = new Date().toISOString();
+  const logMessage = `[${timestamp}] [${process.env.CLIENT_ID}] [${level}] ${message}`;
+  
+  // Siempre a consola / Always to console
+  console.log(logMessage);
+  
+  // También a archivo si está configurado / Also to file if configured
+  if (process.env.LOG_TO_FILE === 'true') {
+    try {
+      fs.appendFileSync(
+        path.join(LOG_PATH, `${process.env.CLIENT_ID}.log`),
+        logMessage + '\n'
+      );
+    } catch (err) {
+      console.error('Error escribiendo log a archivo:', err.message);
+    }
+  }
+};
 
 // Determinar URL del webhook según el entorno / Determine webhook URL by environment
 const webhookUrl = process.env.NODE_ENV === 'production' 
@@ -22,53 +59,75 @@ const webhookUrl = process.env.NODE_ENV === 'production'
   : process.env.WEBHOOK_URL_TEST;
 
 // Log del entorno actual / Log current environment
-console.log(`[${process.env.CLIENT_ID}] Entorno: ${process.env.NODE_ENV || 'test'}`);
-console.log(`[${process.env.CLIENT_ID}] Webhook URL: ${webhookUrl || 'No configurado'}`);
+log('INFO', `Entorno: ${process.env.NODE_ENV || 'test'}`);
+log('INFO', `Webhook URL: ${webhookUrl || 'No configurado'}`);
+log('INFO', `Ejecutando en: ${isEasyPanel ? 'EasyPanel/Docker' : 'Shell'}`);
 
+// Configuración adaptativa de Puppeteer / Adaptive Puppeteer configuration
+const puppeteerConfig = {
+  headless: true,
+  args: ['--no-sandbox', '--disable-setuid-sandbox']
+};
+
+if (isDocker || isEasyPanel) {
+  puppeteerConfig.executablePath = process.env.PUPPETEER_EXECUTABLE_PATH || '/usr/bin/chromium-browser';
+  log('INFO', 'Usando Chromium del sistema para Docker/EasyPanel');
+}
+
+// Inicialización del cliente WhatsApp / WhatsApp client initialization
 const client = new Client({
-  authStrategy: new LocalAuth({ clientId: process.env.CLIENT_ID }),
-  puppeteer: { headless: true, args: ['--no-sandbox', '--disable-setuid-sandbox'] }
+  authStrategy: new LocalAuth({ 
+    clientId: process.env.CLIENT_ID,
+    dataPath: SESSION_PATH
+  }),
+  puppeteer: puppeteerConfig
 });
 
 let clientReady = false;
+let lastQR = '';
 
-// Extra: para estar seguro de iniciar el bot
+// Eventos del cliente / Client events
 client.on('ready', () => {
   clientReady = true;
-  console.log(`[${process.env.CLIENT_ID}] ✅ WhatsApp conectado y listo`);
+  log('SUCCESS', '✅ WhatsApp conectado y listo');
 });
 
 client.on('disconnected', (reason) => {
   clientReady = false;
-  console.log(`[${process.env.CLIENT_ID}] Cliente desconectado: ${reason}`);
+  log('WARNING', `Cliente desconectado: ${reason}`);
   
-  // Si la desconexión es por logout, reinicializar
+  // Si la desconexión es por logout, reinicializar / If disconnected by logout, reinitialize
   if (reason === 'LOGOUT' || reason === 'NAVIGATION') {
-    console.log(`[${process.env.CLIENT_ID}] Reinicializando cliente...`);
+    log('INFO', 'Reinicializando cliente...');
     setTimeout(() => {
       client.initialize();
     }, 5000);
   }
 });
 
-// Paso 2: Mostrar QR para escanear
-let lastQR = '';
-
+// Generación de código QR / QR code generation
 client.on('qr', (qr) => {
   lastQR = qr;
-  console.log(`[${process.env.CLIENT_ID}] Escanea este código QR:`);
+  log('INFO', 'Nuevo código QR generado');
   qrcode.generate(qr, { small: true });
-  console.log(`[${process.env.CLIENT_ID}] QR generado a las: ${new Date().toLocaleString()}`);
+  log('INFO', `QR generado a las: ${new Date().toLocaleString()}`);
 });
 
-
-// Paso 4: Cuando llega un mensaje entrante
+// Procesamiento de mensajes entrantes / Incoming message processing
 client.on('message', async (msg) => {
   const { from, type } = msg;
-  let payload = { from, type, client: process.env.CLIENT_ID };
+  let payload = { 
+    from, 
+    type, 
+    client: process.env.CLIENT_ID,
+    timestamp: new Date().toISOString()
+  };
 
-  if (type === 'chat') payload.text = msg.body;
+  if (type === 'chat') {
+    payload.text = msg.body;
+  }
 
+  // Manejo de archivos multimedia / Media handling
   if (msg.hasMedia) {
     try {
       const media = await msg.downloadMedia();
@@ -77,79 +136,140 @@ client.on('message', async (msg) => {
         filename: `media_${Date.now()}.${media.mimetype.split('/')[1]}`,
         data: media.data
       };
+      log('INFO', `Media recibida de ${from}: ${payload.media.mimetype}`);
     } catch (err) {
-      console.error(`[${process.env.CLIENT_ID}] Error al descargar media`, err.message);
+      log('ERROR', `Error descargando media: ${err.message}`);
     }
   }
 
+  // Envío al webhook si está configurado / Send to webhook if configured
   if (webhookUrl) {
     try {
-      const webhookResponse = await axios.post(webhookUrl, payload);
-      console.log(`[${process.env.CLIENT_ID}] ✅ Enviado a webhook (${process.env.NODE_ENV || 'test'})`);
-
-      const { to, message, media } = webhookResponse.data;
-      const chatId = to.includes('@c.us') || to.includes('@g.us') ? to : `${to}@c.us`;
-
-      if (media && media.data && media.mimetype) {
-        const ext = mime.extension(media.mimetype);
-        const file = new MessageMedia(media.mimetype, media.data, media.filename || `media.${ext}`);
-        await client.sendMessage(chatId, file);
-      }
-      // Para soportar varios mensajes ********
-      if (message) {
-        if (Array.isArray(message)) {
-            for (const item of message) {
-            if (typeof item === 'string') {
-                await client.sendMessage(chatId, item);
-            }
-            }
-        } else if (typeof message === 'string') {
-            await client.sendMessage(chatId, message);
+      const webhookResponse = await axios.post(webhookUrl, payload, {
+        timeout: 30000, // Timeout de 30 segundos
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Client-ID': process.env.CLIENT_ID,
+          'X-Environment': process.env.NODE_ENV || 'test'
         }
-     }
+      });
+      
+      log('SUCCESS', `✅ Enviado a webhook (${process.env.NODE_ENV || 'test'})`);
 
-      console.log(`[${process.env.CLIENT_ID}] ✅ Mensaje enviado desde respuesta del agente IA`);
+      // Procesar respuesta del webhook / Process webhook response
+      const { to, message, media } = webhookResponse.data;
+      
+      if (to) {
+        const chatId = to.includes('@c.us') || to.includes('@g.us') ? to : `${to}@c.us`;
 
+        // Enviar media si existe / Send media if exists
+        if (media && media.data && media.mimetype) {
+          const ext = mime.extension(media.mimetype);
+          const file = new MessageMedia(
+            media.mimetype, 
+            media.data, 
+            media.filename || `media.${ext}`
+          );
+          await client.sendMessage(chatId, file);
+          log('SUCCESS', `Media enviada a ${chatId}`);
+        }
+
+        // Soporte para múltiples mensajes en array / Support for multiple messages in array
+        if (message) {
+          if (Array.isArray(message)) {
+            for (const [index, item] of message.entries()) {
+              if (typeof item === 'string') {
+                await client.sendMessage(chatId, item);
+                log('SUCCESS', `Mensaje ${index + 1}/${message.length} enviado a ${chatId}`);
+                // Pequeña pausa entre mensajes para evitar límites
+                if (index < message.length - 1) {
+                  await new Promise(resolve => setTimeout(resolve, 1000));
+                }
+              }
+            }
+          } else if (typeof message === 'string') {
+            await client.sendMessage(chatId, message);
+            log('SUCCESS', `Mensaje enviado a ${chatId}`);
+          }
+        }
+      }
     } catch (err) {
-      console.error(`[${process.env.CLIENT_ID}] Error al procesar respuesta del webhook`, err.message);
+      log('ERROR', `Error procesando webhook: ${err.message}`);
+      if (err.response) {
+        log('ERROR', `Respuesta del webhook: ${JSON.stringify(err.response.data)}`);
+      }
     }
   }
-
 });
 
-// Paso 5: Endpoint para enviar mensajes desde N8N mediante la API BravesLab creada para el cliente
-app.post('/api/whatsapp', async (req, res) => {
+// Manejo de errores de autenticación / Authentication error handling
+client.on('auth_failure', (msg) => {
+  log('ERROR', `Error de autenticación: ${msg}`);
+  log('INFO', 'Eliminando sesión y reiniciando...');
+  
+  // Eliminar sesión corrupta / Remove corrupted session
+  const sessionPath = path.join(SESSION_PATH, `session-${process.env.CLIENT_ID}`);
+  if (fs.existsSync(sessionPath)) {
+    fs.rmSync(sessionPath, { recursive: true, force: true });
+  }
+  
+  setTimeout(() => {
+    client.initialize();
+  }, 3000);
+});
+
+client.on('authenticated', () => {
+  log('SUCCESS', '✅ Autenticado correctamente');
+});
+
+// ===========================================
+// API REST ENDPOINTS
+// ===========================================
+
+// Middleware de autenticación / Authentication middleware
+const authenticateAPI = (req, res, next) => {
   const apiKey = req.headers['x-api-key'];
   if (apiKey !== process.env.API_KEY) {
-    return res.status(401).json({ error: 'Unauthorized: Invalid API Key' });
+    return res.status(401).json({ 
+      error: 'Unauthorized: Invalid API Key',
+      timestamp: new Date().toISOString()
+    });
   }
+  next();
+};
 
-  // Validación más robusta del cliente
+// Endpoint principal para enviar mensajes / Main endpoint to send messages
+app.post('/api/whatsapp', authenticateAPI, async (req, res) => {
+  // Validación del cliente / Client validation
   if (!client) {
-    console.error(`[${process.env.CLIENT_ID}] Cliente no está definido`);
+    log('ERROR', 'Cliente no está definido');
     return res.status(503).json({ error: 'WhatsApp client not initialized' });
   }
 
   if (!clientReady) {
-    console.error(`[${process.env.CLIENT_ID}] Cliente no está listo`);
+    log('WARNING', 'Cliente no está listo');
     return res.status(503).json({ error: 'WhatsApp client not ready - check QR scan' });
   }
 
-  // Verificar que el cliente esté completamente funcional
+  // Verificar estado del cliente / Verify client state
   try {
     const clientInfo = await client.getState();
     if (clientInfo !== 'CONNECTED') {
-      console.error(`[${process.env.CLIENT_ID}] Cliente no conectado. Estado: ${clientInfo}`);
-      return res.status(503).json({ error: `WhatsApp client not connected. State: ${clientInfo}` });
+      log('WARNING', `Cliente no conectado. Estado: ${clientInfo}`);
+      return res.status(503).json({ 
+        error: `WhatsApp client not connected. State: ${clientInfo}` 
+      });
     }
   } catch (err) {
-    console.error(`[${process.env.CLIENT_ID}] Error verificando estado del cliente:`, err.message);
+    log('ERROR', `Error verificando estado: ${err.message}`);
     return res.status(503).json({ error: 'WhatsApp client not accessible' });
   }
 
   let { to, text, media } = req.body;
 
-  if (!to) return res.status(400).json({ error: 'Missing "to" parameter' });
+  if (!to) {
+    return res.status(400).json({ error: 'Missing "to" parameter' });
+  }
 
   to = to.trim();
   let chatId = to;
@@ -158,42 +278,29 @@ app.post('/api/whatsapp', async (req, res) => {
   }
 
   try {
-    // Verificar si el usuario está registrado
+    // Verificar si el usuario está registrado / Check if user is registered
     const isRegistered = await client.isRegisteredUser(chatId);
     if (!isRegistered) {
-      console.log(`[${process.env.CLIENT_ID}] ID no registrado: ${chatId}`);
+      log('WARNING', `ID no registrado: ${chatId}`);
       return res.status(404).json({ error: 'Recipient not found' });
     }
 
-    // Validación del chat - con timeout para evitar bloqueos
-    let chat;
-    try {
-      chat = await Promise.race([
-        client.getChatById(chatId),
-        new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 10000))
-      ]);
-    } catch (chatErr) {
-      console.error(`[${process.env.CLIENT_ID}] Error accediendo al chat ${chatId}:`, chatErr.message);
-      // Intentar enviar sin validar chat si el error es de timeout
-      if (chatErr.message === 'Timeout') {
-        console.log(`[${process.env.CLIENT_ID}] Timeout en getChatById, intentando envío directo`);
-      } else {
-        return res.status(404).json({ error: `Chat not accessible for ${chatId}` });
-      }
-    }
-
-    // Enviar media si existe
+    // Enviar media si existe / Send media if exists
     if (media && media.data && media.mimetype) {
       const ext = mime.extension(media.mimetype);
-      const file = new MessageMedia(media.mimetype, media.data, media.filename || `media.${ext}`);
+      const file = new MessageMedia(
+        media.mimetype, 
+        media.data, 
+        media.filename || `media.${ext}`
+      );
       await client.sendMessage(chatId, file);
-      console.log(`[${process.env.CLIENT_ID}] ✅ Media enviado a ${chatId}`);
+      log('SUCCESS', `✅ Media enviada a ${chatId}`);
     }
 
-    // Enviar texto si existe
+    // Enviar texto si existe / Send text if exists
     if (text) {
       await client.sendMessage(chatId, text);
-      console.log(`[${process.env.CLIENT_ID}] ✅ Mensaje de texto enviado a ${chatId}`);
+      log('SUCCESS', `✅ Mensaje de texto enviado a ${chatId}`);
     }
 
     res.json({ 
@@ -205,7 +312,7 @@ app.post('/api/whatsapp', async (req, res) => {
     });
 
   } catch (err) {
-    console.error(`[${process.env.CLIENT_ID}] Error al enviar mensaje a ${chatId}:`, err.message);
+    log('ERROR', `Error enviando mensaje a ${chatId}: ${err.message}`);
     res.status(500).json({ 
       error: err.message,
       details: 'Check server logs for more information'
@@ -213,34 +320,30 @@ app.post('/api/whatsapp', async (req, res) => {
   }
 });
 
-// Endpoint para verificar el estado del cliente
-app.get('/api/whatsapp/status', async (req, res) => {
-  const apiKey = req.headers['x-api-key'];
-  if (apiKey !== process.env.API_KEY) {
-    return res.status(401).json({ error: 'Unauthorized: Invalid API Key' });
-  }
-
+// Endpoint de estado del sistema / System status endpoint
+app.get('/api/whatsapp/status', authenticateAPI, async (req, res) => {
   try {
     let status = {
       clientExists: !!client,
       clientReady: clientReady,
       environment: process.env.NODE_ENV || 'test',
+      platform: isEasyPanel ? 'EasyPanel/Docker' : 'Shell',
       webhookUrl: webhookUrl || null,
       timestamp: new Date().toISOString(),
-      clientId: process.env.CLIENT_ID
+      clientId: process.env.CLIENT_ID,
+      version: '1.1.2'
     };
 
-    if (client) {
+    if (client && clientReady) {
       try {
         const state = await client.getState();
         status.connectionState = state;
         status.isConnected = state === 'CONNECTED';
         
-        if (state === 'CONNECTED') {
-          const info = client.info;
+        if (state === 'CONNECTED' && client.info) {
           status.whatsappInfo = {
-            number: info ? info.wid.user : 'unknown',
-            platform: info ? info.platform : 'unknown'
+            number: client.info.wid.user,
+            platform: client.info.platform
           };
         }
       } catch (err) {
@@ -251,19 +354,15 @@ app.get('/api/whatsapp/status', async (req, res) => {
 
     res.json(status);
   } catch (err) {
+    log('ERROR', `Error en status: ${err.message}`);
     res.status(500).json({ error: err.message });
   }
 });
 
-// Endpoint para regenerar QR en caso de desconexión
-app.post('/api/whatsapp/reset', async (req, res) => {
-  const apiKey = req.headers['x-api-key'];
-  if (apiKey !== process.env.API_KEY) {
-    return res.status(401).json({ error: 'Unauthorized: Invalid API Key' });
-  }
-
+// Endpoint para reiniciar el cliente / Client restart endpoint
+app.post('/api/whatsapp/reset', authenticateAPI, async (req, res) => {
   try {
-    console.log(`[${process.env.CLIENT_ID}] Reiniciando cliente por API...`);
+    log('INFO', 'Reiniciando cliente por API...');
     
     clientReady = false;
     await client.destroy();
@@ -272,59 +371,145 @@ app.post('/api/whatsapp/reset', async (req, res) => {
       client.initialize();
     }, 2000);
     
-    res.json({ status: 'restarting', message: 'Client restarting, check logs for QR code' });
+    res.json({ 
+      status: 'restarting', 
+      message: 'Client restarting, check logs for QR code' 
+    });
   } catch (err) {
-    console.error(`[${process.env.CLIENT_ID}] Error al reiniciar:`, err.message);
+    log('ERROR', `Error al reiniciar: ${err.message}`);
     res.status(500).json({ error: err.message });
   }
 });
 
-// Paso 6: Endpoint para mostrar el QR en el navegador
+// Página principal con QR / Main page with QR
 app.get('/', async (req, res) => {
-  if (!lastQR) {
-    return res.send(`
-      <h2>Bot operativo en entorno: ${process.env.NODE_ENV || 'test'}</h2>
-      <p>No hay QR disponible. Ya está vinculado o esperando...</p>
-      <p><strong>Webhook:</strong> ${webhookUrl || 'No configurado'}</p>
-    `);
-  }
+  const html = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>MBA BravesLab - ${process.env.CLIENT_ID}</title>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <style>
+        body {
+          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          min-height: 100vh;
+          margin: 0;
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .container {
+          background: white;
+          padding: 2rem;
+          border-radius: 12px;
+          box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+          text-align: center;
+          max-width: 400px;
+        }
+        h1 { color: #333; margin-bottom: 0.5rem; }
+        h2 { color: #666; font-size: 1.2rem; font-weight: normal; }
+        .status { 
+          padding: 0.5rem 1rem; 
+          border-radius: 20px; 
+          display: inline-block;
+          margin: 1rem 0;
+          font-weight: 600;
+        }
+        .connected { background: #10b981; color: white; }
+        .waiting { background: #f59e0b; color: white; }
+        .info {
+          background: #f3f4f6;
+          padding: 1rem;
+          border-radius: 8px;
+          margin: 1rem 0;
+          text-align: left;
+        }
+        .info p { margin: 0.25rem 0; color: #4b5563; }
+        .qr-container { margin: 2rem 0; }
+        img { max-width: 280px; border-radius: 8px; }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <h1>MBA BravesLab</h1>
+        <h2>Agente de Mensajería Profesional</h2>
+  `;
 
-  try {
-    const qrImage = await QRCode.toDataURL(lastQR);
-    res.send(`
-      <h2>Escanea este código QR para vincular WhatsApp:</h2>
-      <p><strong>Entorno:</strong> ${process.env.NODE_ENV || 'test'}</p>
-      <p><strong>Webhook:</strong> ${webhookUrl || 'No configurado'}</p>
-      <img src="${qrImage}" alt="QR Code" style="max-width:300px;" />
+  if (!lastQR || clientReady) {
+    res.send(html + `
+        <div class="status connected">✅ WhatsApp Conectado</div>
+        <div class="info">
+          <p><strong>Cliente:</strong> ${process.env.CLIENT_ID}</p>
+          <p><strong>Entorno:</strong> ${process.env.NODE_ENV || 'test'}</p>
+          <p><strong>Plataforma:</strong> ${isEasyPanel ? 'EasyPanel/Docker' : 'Shell'}</p>
+          <p><strong>Webhook:</strong> ${webhookUrl ? 'Configurado' : 'No configurado'}</p>
+          <p><strong>Estado:</strong> Operativo</p>
+        </div>
+      </div>
+    </body>
+    </html>
     `);
-  } catch (err) {
-    res.status(500).send('Error generando el QR');
+  } else {
+    try {
+      const qrImage = await QRCode.toDataURL(lastQR);
+      res.send(html + `
+        <div class="status waiting">⏳ Esperando vinculación</div>
+        <p>Escanea este código QR con WhatsApp:</p>
+        <div class="qr-container">
+          <img src="${qrImage}" alt="QR Code" />
+        </div>
+        <div class="info">
+          <p><strong>1.</strong> Abre WhatsApp en tu teléfono</p>
+          <p><strong>2.</strong> Ve a Configuración → Dispositivos vinculados</p>
+          <p><strong>3.</strong> Toca "Vincular un dispositivo"</p>
+          <p><strong>4.</strong> Escanea este código QR</p>
+        </div>
+      </div>
+    </body>
+    </html>
+      `);
+    } catch (err) {
+      res.status(500).send('Error generando el QR');
+    }
   }
 });
 
-// Paso 6: Iniciar servidor y seleccionar puerto
+// Health check endpoint para monitoreo / Health check endpoint for monitoring
+app.get('/health', (req, res) => {
+  res.json({ 
+    status: clientReady ? 'healthy' : 'unhealthy',
+    timestamp: new Date().toISOString()
+  });
+});
+
+// Iniciar servidor / Start server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`Servidor activo en puerto ${PORT}`);
-  console.log(`Entorno: ${process.env.NODE_ENV || 'test'}`);
-  console.log(`Webhook: ${webhookUrl || 'No configurado'}`);
+  log('INFO', `===========================================`);
+  log('INFO', `MBA BravesLab v1.1.2 iniciado`);
+  log('INFO', `Servidor activo en puerto ${PORT}`);
+  log('INFO', `Entorno: ${process.env.NODE_ENV || 'test'}`);
+  log('INFO', `Plataforma: ${isEasyPanel ? 'EasyPanel/Docker' : 'Shell'}`);
+  log('INFO', `Webhook: ${webhookUrl || 'No configurado'}`);
+  log('INFO', `===========================================`);
 });
 
-// Manejar errores de autenticación
-client.on('auth_failure', (msg) => {
-  console.error(`[${process.env.CLIENT_ID}] Error de autenticación: ${msg}`);
-  console.log(`[${process.env.CLIENT_ID}] Eliminando sesión y reiniciando...`);
-  
-  // Eliminar sesión corrupta y reiniciar
-  setTimeout(() => {
-    client.initialize();
-  }, 3000);
+// Manejo de señales para cierre limpio / Signal handling for clean shutdown
+process.on('SIGINT', async () => {
+  log('INFO', 'Recibida señal SIGINT, cerrando limpiamente...');
+  await client.destroy();
+  process.exit(0);
 });
 
-// Manejar cuando se necesita autenticación
-client.on('authenticated', () => {
-  console.log(`[${process.env.CLIENT_ID}] ✅ Autenticado correctamente`);
+process.on('SIGTERM', async () => {
+  log('INFO', 'Recibida señal SIGTERM, cerrando limpiamente...');
+  await client.destroy();
+  process.exit(0);
 });
 
-// Paso 7: Inicializar el cliente WhatsApp
-client.initialize();
+// Inicializar el cliente WhatsApp / Initialize WhatsApp client
+client.initialize()
+  .then(() => log('INFO', 'Inicialización del cliente iniciada'))
+  .catch(err => log('ERROR', `Error iniciando cliente: ${err.message}`));

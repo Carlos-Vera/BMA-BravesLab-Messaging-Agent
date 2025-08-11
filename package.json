@@ -1,12 +1,18 @@
 {
   "name": "braveslab-messaging-agent",
-  "version": "1.0.0",
-  "description": "BravesLab Messaging Agent (BMA) - Agente de mensajeria con webhook y API REST para integracion empresarial",
+  "version": "1.1.2",
+  "description": "BravesLab Messaging Agent (BMA) - Agente de mensajería con webhook y API REST para integración empresarial",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "prod": "NODE_ENV=production node index.js",
+    "test": "NODE_ENV=test node index.js",
+    "pm2:start": "pm2 start ecosystem.config.js",
+    "pm2:stop": "pm2 stop all",
+    "pm2:restart": "pm2 restart all",
+    "pm2:logs": "pm2 logs",
+    "pm2:monit": "pm2 monit"
   },
   "keywords": [
     "messaging",
@@ -16,17 +22,19 @@
     "rest",
     "braveslab",
     "automation",
-    "telegram",
-    "enterprise"
+    "whatsapp",
+    "enterprise",
+    "bot"
   ],
-  "author": "Carlos Vera <carlos@braveslab.com> (https://braveslab.com)",
+  "author": "BravesLab Team <hello@braveslab.com> (https://braveslab.com)",
   "license": "CC-BY-NC-SA-4.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/Carlos-Vera/waw-braves-js.git"
   },
   "bugs": {
-    "url": "https://github.com/Carlos-Vera/waw-braves-js/issues"
+    "url": "https://github.com/Carlos-Vera/waw-braves-js/issues",
+    "email": "hello@braveslab.com"
   },
   "homepage": "https://github.com/Carlos-Vera/waw-braves-js#readme",
   "dependencies": {
@@ -46,5 +54,14 @@
   "engines": {
     "node": ">=18.0.0",
     "npm": ">=9.0.0"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  },
+  "funding": {
+    "type": "individual",
+    "url": "https://braveslab.com/support"
   }
 }

@@ -1,74 +1,74 @@
-# Politica de Seguridad
+# Política de Seguridad
 
 ## Versiones Soportadas
 
 Actualmente damos soporte de seguridad a las siguientes versiones:
 
-| Version | Soportada          |
+| Versión | Soportada          |
 | ------- | ------------------ |
-| 1.0.x   | Si                |
+| 1.1.x   | Sí                |
+| 1.0.x   | Sí                |
 | < 1.0   | No                |
 
 ## Reportar Vulnerabilidades
 
-Si encuentras una vulnerabilidad de seguridad en este proyecto, por favor siguenos estos pasos:
+Si encuentras una vulnerabilidad de seguridad en este proyecto, por favor sigue estos pasos:
 
 ### Contacto Seguro
 
-**NO abras un issue publico** para reportar vulnerabilidades de seguridad.
+**NO abras un issue público** para reportar vulnerabilidades de seguridad.
 
 En su lugar, contacta directamente:
 
-- **Email:** carlos@braveslab.com
-- **WhatsApp:** +34 623 928 854 (solo para casos criticos)
+- **Email:** hello@braveslab.com
 - **Asunto:** `[SEGURIDAD] Vulnerabilidad en BravesLab Messaging Agent`
 
 ### Proceso de Reporte
 
-1. **Contacto inicial:** Envianos un email con los detalles basicos
-2. **Confirmacion:** Te responderemos en **48 horas** confirmando la recepcion
-3. **Evaluacion:** Analizaremos el reporte en **7 dias**
-4. **Resolucion:** Trabajaremos en una solucion segun la severidad
-5. **Divulgacion:** Una vez solucionado, acreditaremos tu descubrimiento
+1. **Contacto inicial:** Envíanos un email con los detalles básicos
+2. **Confirmación:** Te responderemos en **48 horas** confirmando la recepción
+3. **Evaluación:** Analizaremos el reporte en **7 días**
+4. **Resolución:** Trabajaremos en una solución según la severidad
+5. **Divulgación:** Una vez solucionado, acreditaremos tu descubrimiento
 
-### Informacion a Incluir
+### Información a Incluir
 
-Para ayudarnos a evaluar y resolver la vulnerabilidad rapidamente, incluye:
+Para ayudarnos a evaluar y resolver la vulnerabilidad rápidamente, incluye:
 
-- **Descripcion detallada** de la vulnerabilidad
-- **Pasos especificos** para reproducir el problema
+- **Descripción detallada** de la vulnerabilidad
+- **Pasos específicos** para reproducir el problema
 - **Impacto potencial** y alcance del problema
-- **Version afectada** del software
-- **Configuracion del entorno** donde ocurre
+- **Versión afectada** del software
+- **Configuración del entorno** donde ocurre
 - **Evidencia** (logs, capturas, etc.) si es posible
-- **Posible solucion** si tienes alguna idea
+- **Posible solución** si tienes alguna idea
 
-### Clasificacion de Severidad
+### Clasificación de Severidad
 
-| Nivel | Descripcion | Tiempo de Respuesta |
+| Nivel | Descripción | Tiempo de Respuesta |
 |-------|-------------|---------------------|
-| **Critica** | Acceso no autorizado completo, RCE | 24 horas |
-| **Alta** | Exposicion de datos sensibles | 48 horas |
-| **Media** | DoS, bypass de autenticacion | 7 dias |
-| **Baja** | Divulgacion de informacion menor | 14 dias |
+| **Crítica** | Acceso no autorizado completo, RCE | 24 horas |
+| **Alta** | Exposición de datos sensibles | 48 horas |
+| **Media** | DoS, bypass de autenticación | 7 días |
+| **Baja** | Divulgación de información menor | 14 días |
 
 ### Reconocimientos
 
-Si reportas una vulnerabilidad valida, te reconoceremos de las siguientes formas:
+Si reportas una vulnerabilidad válida, te reconoceremos de las siguientes formas:
 
-- **Mencion en el CHANGELOG** de la version corregida
-- **Credito en el README** del proyecto
+- **Mención en el CHANGELOG** de la versión corregida
+- **Crédito en el README** del proyecto
 - **Entrada en el hall of fame** de seguridad
-- **Recomendacion en LinkedIn** (si lo deseas)
+- **Recomendación en LinkedIn** (si lo deseas)
 
-### Divulgacion Responsable
+### Divulgación Responsable
 
 Esperamos que sigas estos principios:
 
 - **No accedas** a datos que no te pertenecen
 - **No interrumpas** servicios de otros usuarios
-- **No divulgues** la vulnerabilidad hasta que este corregida
-- **Actua de buena fe** para mejorar la seguridad
+- **No divulgues** la vulnerabilidad hasta que esté corregida
+- **Actúa de buena fe** para mejorar la seguridad
 
 ### Consideraciones Comerciales
 
@@ -80,12 +80,12 @@ Si usas este software comercialmente:
 
 ### Recursos Adicionales
 
-- [Guia de Seguridad OWASP](https://owasp.org/)
-- [Configuracion Segura de Node.js](https://nodejs.org/en/docs/guides/security/)
-- [Mejores Practicas de WhatsApp Business](https://business.whatsapp.com/security)
+- [Guía de Seguridad OWASP](https://owasp.org/)
+- [Configuración Segura de Node.js](https://nodejs.org/en/docs/guides/security/)
+- [Mejores Prácticas de WhatsApp Business](https://business.whatsapp.com/security)
 
 ---
 
-**Gracias por ayudar a mantener seguro este proyecto!**
+**¡Gracias por ayudar a mantener seguro este proyecto!**
 
-Tu contribucion hace que el ecosistema sea mas seguro para todos los usuarios.
+Tu contribución hace que el ecosistema sea más seguro para todos los usuarios.

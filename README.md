@@ -5,13 +5,13 @@
 [![GitHub release](https://img.shields.io/github/release/Carlos-Vera/waw-braves-js.svg)](https://github.com/Carlos-Vera/waw-braves-js/releases)
 [![GitHub issues](https://img.shields.io/github/issues/Carlos-Vera/waw-braves-js.svg)](https://github.com/Carlos-Vera/waw-braves-js/issues)
 
-> **Agente de mensajeria profesional con webhook y API REST para integracion empresarial**
+> **Agente de mensajería profesional con webhook y API REST para integración empresarial**
 
-Un agente robusto y escalable para plataformas de mensajeria que permite automatizar conversaciones, integrar con sistemas de IA y gestionar multiples clientes desde una API REST completa.
+Un agente robusto y escalable para plataformas de mensajería que permite automatizar conversaciones, integrar con sistemas de IA y gestionar múltiples clientes desde una API REST completa.
 
-## Opciones de Instalacion
+## Opciones de Instalación
 
-### Instalacion Rapida con EasyPanel (Recomendada)
+### Instalación Rápida con EasyPanel (Recomendada)
 
 <a href="https://easypanel.io" target="_blank">
   <img src="https://easypanel.io/img/logo_dark.svg" alt="Easy Panel" width="300" height="auto">
@@ -19,34 +19,34 @@ Un agente robusto y escalable para plataformas de mensajeria que permite automat
 
 **Para usuarios que priorizan simplicidad y rapidez de despliegue:**
 
-- **Tiempo de instalacion**: 10-15 minutos
-- **Conocimientos requeridos**: Basicos (DNS, formularios)
+- **Tiempo de instalación**: 10-15 minutos
+- **Conocimientos requeridos**: Básicos (DNS, formularios)
 - **Mantenimiento**: Automatizado
-- **SSL**: Automatico
-- **Actualizaciones**: Automaticas
+- **SSL**: Automático
+- **Actualizaciones**: Automáticas
 
-[**Ver Guia EasyPanel →**](DESPLIEGUE_EASYPANEL.md) | [**Guia Usuario Basico →**](GUIA_USUARIO_BASICO.md)
+[**Ver Guía EasyPanel →**](DESPLIEGUE_EASYPANEL.md) | [**Guía Usuario Básico →**](GUIA_USUARIO_BASICO.md)
 
-### Instalacion Manual (Shell)
+### Instalación Manual (Shell)
 
 **Para desarrolladores que requieren control total:**
 
-- **Tiempo de instalacion**: 30-60 minutos
+- **Tiempo de instalación**: 30-60 minutos
 - **Conocimientos requeridos**: Avanzados (Linux, Node.js, PM2)
 - **Mantenimiento**: Manual
-- **Flexibilidad**: Maxima
-- **Recursos**: Minimos
+- **Flexibilidad**: Máxima
+- **Recursos**: Mínimos
 
-[**Ver Instalacion Manual →**](#instalacion-rapida)
+[**Ver Instalación Manual →**](#instalación-rápida)
 
 ### Comparativa: EasyPanel vs Shell
 
 | Aspecto | EasyPanel | Shell |
 |---------|-----------|--------|
 | **Complejidad** | Baja | Alta |
-| **Tiempo instalacion** | 10-15 min | 30-60 min |
+| **Tiempo instalación** | 10-15 min | 30-60 min |
 | **Mantenimiento** | Automatizado | Manual |
-| **Recursos servidor** | +15% overhead | Minimo |
+| **Recursos servidor** | +15% overhead | Mínimo |
 | **Costo total/año** | $520-1,470 | $1,520-3,415 |
 | **Ideal para** | Empresas, consultores | Desarrolladores, SysAdmins |
 
@@ -56,62 +56,62 @@ Un agente robusto y escalable para plataformas de mensajeria que permite automat
 
 ## Disclaimer Legal
 
-**IMPORTANTE:** Este proyecto es independiente y no esta afiliado, respaldado o patrocinado por Meta Platforms, Inc. o sus subsidiarias. Las marcas comerciales mencionadas son propiedad de sus respectivos duenos.
+**IMPORTANTE:** Este proyecto es independiente y no está afiliado, respaldado o patrocinado por Meta Platforms, Inc. o sus subsidiarias. Las marcas comerciales mencionadas son propiedad de sus respectivos dueños.
 
-**DISCLAIMER EASYPANEL:** EasyPanel es una marca comercial independiente. Este template es desarrollado por BRAVES LAB LLC y no esta oficialmente respaldado por EasyPanel. El uso de logos y marcas es unicamente con fines informativos bajo uso justo.
+**DISCLAIMER EASYPANEL:** EasyPanel es una marca comercial independiente. Este template es desarrollado por BRAVES LAB LLC y no está oficialmente respaldado por EasyPanel. El uso de logos y marcas es únicamente con fines informativos bajo uso justo.
 
-Este software utiliza interfaces web publicas y esta destinado unicamente para:
-- Uso educativo e investigacion
+Este software utiliza interfaces web públicas y está destinado únicamente para:
+- Uso educativo e investigación
 - Desarrollo y pruebas en entornos controlados
 - Integraciones empresariales autorizadas
 
 **RESPONSABILIDAD DEL USUARIO:** Los usuarios son completamente responsables de:
-- Cumplir con todos los terminos de servicio aplicables
+- Cumplir con todos los términos de servicio aplicables
 - Obtener las autorizaciones necesarias antes del uso comercial
-- Respetar las politicas de las plataformas de mensajeria
-- Usar el software de manera etica y legal
+- Respetar las políticas de las plataformas de mensajería
+- Usar el software de manera ética y legal
 
 **USO BAJO SU PROPIO RIESGO:** BRAVES LAB LLC no se hace responsable del uso indebido de este software.
 
 ---
 
-## Caracteristicas Principales
+## Características Principales
 
-### Agente de Mensajeria Avanzado
-- Conexion estable con **whatsapp-web.js**
-- Manejo de **texto, imagenes, documentos y archivos multimedia**
-- **QR automatico** para vinculacion
-- **Reconexion automatica** y recuperacion de sesion
-- **Multi-instancia** (varios numeros en el mismo servidor)
+### Agente de Mensajería Avanzado
+- Conexión estable con **whatsapp-web.js**
+- Manejo de **texto, imágenes, documentos y archivos multimedia**
+- **QR automático** para vinculación
+- **Reconexión automática** y recuperación de sesión
+- **Multi-instancia** (varios números en el mismo servidor)
 
-### Integracion con IA
-- **Webhook configurable** para envio a sistemas externos
-- **Respuestas automaticas** desde IA (ChatGPT, n8n, etc.)
+### Integración con IA
+- **Webhook configurable** para envío a sistemas externos
+- **Respuestas automáticas** desde IA (ChatGPT, n8n, etc.)
 - **Procesamiento en tiempo real** de mensajes entrantes
-- **Soporte para arrays de mensajes** multiples
+- **Soporte para arrays de mensajes** múltiples
 
 ### API REST Completa
-- **Envio de mensajes** programaticos
-- **Autenticacion con API Key** segura
+- **Envío de mensajes** programáticos
+- **Autenticación con API Key** segura
 - **Endpoints de estado** y monitoreo
-- **Validacion de numeros** automatica
+- **Validación de números** automática
 - **Logs detallados** y debugging
 
-### Listo para Produccion
-- **Integracion con PM2** para auto-restart
+### Listo para Producción
+- **Integración con PM2** para auto-restart
 - **Sistema watchdog** con alertas por Telegram
 - **Rate limiting** y validaciones
 - **Manejo robusto de errores**
-- **Configuracion por variables de entorno**
+- **Configuración por variables de entorno**
 
-## Instalacion EasyPanel
+## Instalación EasyPanel
 
 ### Prerrequisitos
 - Servidor con EasyPanel instalado
 - Dominio propio (ej: miempresa.com)
 - Acceso al panel DNS del dominio
 
-### Instalacion en 3 Pasos
+### Instalación en 3 Pasos
 
 #### 1. Configurar DNS
 En tu proveedor de dominio, agrega:
@@ -128,7 +128,7 @@ En EasyPanel:
 2. Importar desde: `https://raw.githubusercontent.com/Carlos-Vera/waw-braves-js/main/easypanel-template.json`
 3. Completar formulario:
    - **Dominio**: tudominio.com
-   - **API Key**: Generar automaticamente
+   - **API Key**: Generar automáticamente
    - **Webhook URL**: Opcional (para integraciones)
 
 #### 3. Desplegar y Conectar
@@ -141,10 +141,10 @@ En EasyPanel:
 - **CPU**: 100m-500m (0.1-0.5 cores)
 - **RAM**: 256-512MB
 - **Almacenamiento**: 1.5GB (sesiones + logs)
-- **SSL**: Automatico con Let's Encrypt
-- **Backup**: Volumenes persistentes
+- **SSL**: Automático con Let's Encrypt
+- **Backup**: Volúmenes persistentes
 
-## Instalacion Rapida (Shell)
+## Instalación Rápida (Shell)
 
 ### Prerrequisitos
 ```bash
@@ -152,7 +152,7 @@ En EasyPanel:
 node --version  # v18.17.0+
 npm --version   # 9.0.0+
 
-# PM2 (recomendado para produccion)
+# PM2 (recomendado para producción)
 npm install -g pm2
 ```
 
@@ -170,12 +170,14 @@ cp .env.example .env
 nano .env  # Configurar PORT, CLIENT_ID, API_KEY, etc.
 ```
 
-### 2. Configuracion Basica (.env)
+### 2. Configuración Básica (.env)
 ```bash
 PORT=3000
 CLIENT_ID=mi-bot-empresa
 API_KEY=tu-clave-super-segura-aqui
-WEBHOOK_URL=https://tu-ia.com/webhook  # Opcional
+NODE_ENV=production  # o 'test' para desarrollo
+WEBHOOK_URL_PRODUCTION=https://tu-ia.com/webhook/prod  # Opcional
+WEBHOOK_URL_TEST=https://tu-ia.com/webhook/test       # Opcional
 TELEGRAM_BOT_TOKEN=tu-token-telegram   # Para alertas
 TELEGRAM_CHAT_ID=tu-chat-id           # Para alertas
 ```
@@ -185,16 +187,34 @@ TELEGRAM_CHAT_ID=tu-chat-id           # Para alertas
 # Desarrollo
 npm start
 
-# Produccion con PM2
+# Producción con PM2
 pm2 start index.js --name "agente-cliente"
 pm2 save
 pm2 startup
 ```
 
-### 4. Vincular Plataforma de Mensajeria
+### 4. Vincular Plataforma de Mensajería
 1. **Abrir:** `http://tu-servidor:3000`
-2. **Escanear QR** con la aplicacion movil → Dispositivos vinculados
-3. **Listo!** El agente estara operativo
+2. **Escanear QR** con la aplicación móvil → Dispositivos vinculados
+3. **¡Listo!** El agente estará operativo
+
+## Gestión de Entornos
+
+### Configuración Dual de Webhooks
+El sistema soporta URLs separadas para producción y test:
+
+```bash
+# En tu archivo .env
+NODE_ENV=production  # o 'test'
+WEBHOOK_URL_PRODUCTION=https://api.tudominio.com/webhook
+WEBHOOK_URL_TEST=https://test-api.tudominio.com/webhook
+```
+
+### Cambio de Entorno
+- **Shell**: Editar `.env` y reiniciar con PM2
+- **EasyPanel**: Cambiar variable en interfaz web (sin perder sesión WhatsApp)
+
+El agente selecciona automáticamente el webhook correcto según `NODE_ENV`.
 
 ## Uso de la API
 
@@ -231,7 +251,7 @@ curl -X POST http://localhost:3000/api/whatsapp \
   }'
 ```
 
-## Configuracion Avanzada
+## Configuración Avanzada
 
 ### Multi-instancia
 ```bash
@@ -244,19 +264,20 @@ CLIENT_ID=cliente2 PORT=3002 node index.js
 
 ### Webhook con IA
 ```javascript
-// El bot enviara automaticamente:
+// El bot enviará automáticamente:
 {
   "from": "1234567890@c.us",
   "type": "chat",
   "text": "Mensaje del usuario",
-  "client": "mi-bot-empresa"
+  "client": "mi-bot-empresa",
+  "timestamp": "2025-01-01T10:00:00Z"
 }
 
 // Tu IA debe responder:
 {
   "to": "1234567890",
   "message": "Respuesta de la IA"
-  // o "message": ["Mensaje 1", "Mensaje 2"] para multiples
+  // o "message": ["Mensaje 1", "Mensaje 2"] para múltiples
 }
 ```
 
@@ -266,42 +287,44 @@ CLIENT_ID=cliente2 PORT=3002 node index.js
 */5 * * * * node /ruta/alerts/watchdog-demo.js
 ```
 
-## Documentacion
+## Documentación
 
 ### Estructura del Proyecto
 ```
 waw-braves-js/
-├── index.js                    # Aplicacion principal
+├── index.js                    # Aplicación principal
 ├── package.json               # Dependencias y scripts
-├── .env.example              # Plantilla de configuracion
+├── .env.example              # Plantilla de configuración
+├── ecosystem.config.js       # Configuración PM2
 ├── Dockerfile                # Para despliegue EasyPanel
 ├── easypanel-template.json   # Template oficial EasyPanel
-├── DESPLIEGUE_EASYPANEL.md   # Guia tecnica EasyPanel
-├── GUIA_USUARIO_BASICO.md    # Guia usuarios no tecnicos
+├── DESPLIEGUE_EASYPANEL.md   # Guía técnica EasyPanel
+├── GUIA_USUARIO_BASICO.md    # Guía usuarios no técnicos
 ├── COMPARATIVA_MBA_SHELL_vs_EP.md # Comparativa detallada
 ├── alerts/                   # Scripts de monitoreo
-│   ├── check_ws.sh          # Verificacion de estado
-│   └── watchdog-demo.js     # Watchdog automatico
+│   ├── check_ws.sh          # Verificación de estado
+│   └── watchdog-demo.js     # Watchdog automático
 ├── logs/                    # Archivos de log
-└── docs/                   # Documentacion adicional
+└── docs/                   # Documentación adicional
 ```
 
 ### Endpoints de la API
-| Metodo | Endpoint | Descripcion |
+| Método | Endpoint | Descripción |
 |--------|----------|-------------|
 | `POST` | `/api/whatsapp` | Enviar mensaje |
 | `GET` | `/api/whatsapp/status` | Estado del bot |
 | `POST` | `/api/whatsapp/reset` | Reiniciar cliente |
-| `GET` | `/` | Ver QR de vinculacion |
+| `GET` | `/` | Ver QR de vinculación |
+| `GET` | `/health` | Health check |
 
-### Codigos de Respuesta
-- `200` - Exito
-- `400` - Peticion invalida
-- `401` - API Key invalida
+### Códigos de Respuesta
+- `200` - Éxito
+- `400` - Petición inválida
+- `401` - API Key inválida
 - `404` - Destinatario no encontrado
 - `503` - Cliente no conectado
 
-## Solucion de Problemas
+## Solución de Problemas
 
 ### Agente no conecta
 ```bash
@@ -316,8 +339,8 @@ pm2 restart agente-cliente
 ```
 
 ### QR no aparece
-1. Verificar que el puerto este libre
-2. Comprobar configuracion de CLIENT_ID
+1. Verificar que el puerto esté libre
+2. Comprobar configuración de CLIENT_ID
 3. Eliminar carpeta `.wwebjs_auth` y reiniciar
 
 ### Webhook no funciona
@@ -327,11 +350,11 @@ pm2 restart agente-cliente
 
 ## Uso Comercial
 
-Este proyecto esta bajo licencia **CC BY-NC-SA 4.0** (no comercial).
+Este proyecto está bajo licencia **CC BY-NC-SA 4.0** (no comercial).
 
 ### Uso Libre (No Comercial):
 - Proyectos personales
-- Investigacion y educacion
+- Investigación y educación
 - ONGs y organizaciones sin fines de lucro
 - Desarrollo y pruebas
 
@@ -340,42 +363,41 @@ Si necesitas usar este agente para:
 - Empresas y comercios
 - Servicios de pago
 - Productos comerciales
-- Soporte tecnico empresarial
+- Soporte técnico empresarial
 
 **Contacta para licencia comercial:**
-- **Email:** carlos@braveslab.com
-- **WhatsApp:** +34 623 928 854
+- **Email:** hello@braveslab.com
 - **Website:** braveslab.com
 
 **Ofrecemos:**
 - Licencias comerciales flexibles
-- Acuerdos de regalias justos
-- Soporte tecnico especializado
+- Acuerdos de regalías justos
+- Soporte técnico especializado
 - Desarrollo de funcionalidades personalizadas
-- Consultoria de implementacion
+- Consultoría de implementación
 
 ## Contribuir
 
-Las contribuciones son bienvenidas! Por favor lee [CONTRIBUTING.md](CONTRIBUTING.md) para mas detalles.
+Las contribuciones son bienvenidas! Por favor lee [CONTRIBUTING.md](CONTRIBUTING.md) para más detalles.
 
 ### Formas de Contribuir:
 - Reportar errores
-- Proponer nuevas caracteristicas
-- Mejorar documentacion
+- Proponer nuevas características
+- Mejorar documentación
 - Escribir pruebas
 - Traducciones
 
 ## Hoja de Ruta
 
 ### v1.3.0 (Próximamente)
-- [ ] Panel web de administracion
+- [ ] Panel web de administración
 - [ ] Soporte para grupos
 - [ ] Plantillas de mensajes
-- [ ] Metricas y analiticas
+- [ ] Métricas y analíticas
 
 ### v1.2.0
 - [ ] Chatbots con flujos visuales
-- [ ] Integracion con CRM
+- [ ] Integración con CRM
 - [ ] API GraphQL
 - [ ] Multi-tenant SaaS
 
@@ -383,12 +405,12 @@ Las contribuciones son bienvenidas! Por favor lee [CONTRIBUTING.md](CONTRIBUTING
 
 Un agradecimiento especial a todos los que hacen posible este proyecto:
 
-<!-- Sera actualizado automaticamente -->
-- Tu nombre aparecera aqui al contribuir
+<!-- Será actualizado automáticamente -->
+- Tu nombre aparecerá aquí al contribuir
 
 ## Licencia
 
-Este proyecto esta licenciado bajo **Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International**.
+Este proyecto está licenciado bajo **Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International**.
 
 [![License: CC BY-NC-SA 4.0](https://licensebuttons.net/l/by-nc-sa/4.0/88x31.png)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
 
@@ -397,24 +419,24 @@ Este proyecto esta licenciado bajo **Creative Commons Attribution-NonCommercial-
 - **Adaptar** - remix, transformar y construir sobre el material
 - **No Comercial** - no usar para fines comerciales
 - **Compartir Igual** - usar la misma licencia para derivados
-- **Atribucion** - dar credito apropiado
+- **Atribución** - dar crédito apropiado
 
 **Copyright (c) 2025 Carlos Vera - BRAVES LAB LLC**
 
 ---
 
-## Te Gusta el Proyecto?
+## ¿Te Gusta el Proyecto?
 
-Si este proyecto te resulta util:
+Si este proyecto te resulta útil:
 
 - **Dale una estrella** en GitHub
 - **Reporta errores** que encuentres
 - **Sugiere mejoras** 
-- **Contribuye** con codigo
-- **Compartelo** con otros desarrolladores
+- **Contribuye** con código
+- **Compártelo** con otros desarrolladores
 
 ---
 
-**Hecho con amor para la comunidad de codigo abierto**
+**Hecho con amor para la comunidad de código abierto**
 
-**Preguntas?** Abre un [issue](https://github.com/Carlos-Vera/waw-braves-js/issues) o contactanos directamente!
+**¿Preguntas?** Abre un [issue](https://github.com/Carlos-Vera/waw-braves-js/issues) o contáctanos directamente!
