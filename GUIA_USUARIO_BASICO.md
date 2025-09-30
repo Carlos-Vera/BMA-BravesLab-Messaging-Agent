@@ -51,7 +51,7 @@ Esta guía es para la versión **MBA EasyPanel**. Si eliges MBA Shell, [ve a la 
 Un agente de WhatsApp profesional que:
 - Se conecta a tu número de WhatsApp Business mediante QR
 - Permite enviar mensajes automáticamente vía API
-- Se integra con sistemas de automatización
+- Se integra con sistemas de automatización como N8N o Make mediante Webhook
 - Funciona 24/7 sin necesidad de tener el teléfono conectado
 
 ## Requisitos Previos
@@ -75,13 +75,13 @@ Un agente de WhatsApp profesional que:
 ## Paso 1: Configurar DNS (3 minutos)
 
 ### Qué hacer:
-Ve al panel de control de tu dominio (GoDaddy, Cloudflare, etc.) y agrega un registro:
+Ve al panel de control de tu dominio (Hostinger, GoDaddy, Ionos, etc.) y agrega un registro:
 
 ```
 Tipo: A
 Nombre: mba
 Valor: [IP de tu servidor EasyPanel]
-TTL: Automático
+TTL: Automático / Valor por defecto
 ```
 
 ### Ejemplo práctico:
@@ -97,7 +97,7 @@ Esto creará: `mba.miempresa.com`
 
 ### Cómo verificar si funciona:
 Espera 5-10 minutos y prueba abrir: `http://mba.tudominio.com`
-(Debe dar error 404 o similar, pero NO debe decir "sitio no encontrado")
+(Debe dar error 404 o similar, en algunos casos el navegador no permite acceder al sitio por no poseer un certificado SSL, en este caso, añade la excepción u omite el mensaje, depende del navegador, pero NO debe decir "sitio no encontrado")
 
 ---
 
@@ -108,9 +108,11 @@ Espera 5-10 minutos y prueba abrir: `http://mba.tudominio.com`
 2. Inicia sesión con tu usuario administrador
 
 ### Crear la aplicación:
-1. Haz clic en "New Project" o "Nuevo Proyecto"
-2. Seleccionar "Template" o "Plantilla"
-3. Buscar "MBA BravesLab" o importar desde URL:
+1. Haz clic en "New Project" o "Nuevo Proyecto" coloca un nombre
+2. Selecciona "Servicios", luego "Aplicación", coloca un nombre a tu App ej: mba_braveslab 
+3. Importar desde GitHub:
+  - **Propietario:** Carlos Vera
+  - **Repositorio**
    ```
    https://raw.githubusercontent.com/Carlos-Vera/waw-braves-js/main/easypanel-template.json
    ```
